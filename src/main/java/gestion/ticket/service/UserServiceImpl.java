@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.extern.slf4j.XSlf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +29,7 @@ import java.util.List;
 @Transactional
 @Slf4j
 @XSlf4j
-public class UserServiceImpl implements UserService , UserDetailsService {
+public class UserServiceImpl implements UserService , UserDetailsService ,UserDetails {
 
     @Autowired
     private UserRepository userRepository ;
@@ -77,13 +78,45 @@ public class UserServiceImpl implements UserService , UserDetailsService {
     public User getUser(String username) {
         return userRepository.findUserByUsername(username);
     }
-    public User findUser(String u){
-        return userRepository.findUserByUsername(u);
-    }
+
     @Override
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
 }

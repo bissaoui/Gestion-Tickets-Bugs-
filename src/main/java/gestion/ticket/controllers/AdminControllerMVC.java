@@ -40,7 +40,7 @@ public class AdminControllerMVC {
     @GetMapping("/User/{id}")
     public String users(Model m,@PathVariable long id) {
         m.addAttribute("user", userRepository.findById(id).get());
-        return "admin/users";
+        return "admin/user";
     }
 
 

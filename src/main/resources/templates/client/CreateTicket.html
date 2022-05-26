@@ -1,10 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en"  xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+
+    <title>Ticket</title>
 </head>
 <body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" th:href="@{/}">BISSAOUI</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+
+            <li class="nav-item active" sec:authorize="hasAuthority('ADMIN')">
+                <a class="nav-link"  th:href="@{/AdminMVC/Users}"> <i class="fas fa-user-friends"></i> Utilisateurs <span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item active" sec:authorize="hasAuthority('ADMIN')">
+                <a class="nav-link" th:href="@{/AdminMVC/Tickets}"> <i class="fa-solid fa-bug"></i></i> Tickets <span class="sr-only"></span></a>
+            </li>
+
+
+            <li class="nav-item active" sec:authorize="hasAuthority('USER')">
+                <a class="nav-link" th:href="@{/ClientMVC/tickets}"> <i class="fa-solid fa-bug"></i></i> Tickets <span class="sr-only"></span></a>
+            </li>
+
+            <li class="nav-item active" sec:authorize="hasAuthority('DEV')">
+                <a class="nav-link" th:href="@{/DevMVC/bugs}"> <i class="fa-solid fa-bug"></i></i> Tickets <span class="sr-only"></span></a>
+            </li>
+
+            <li class="nav-item active" sec:authorize="isAuthenticated()">
+                <a class="nav-link" href="#"> <i class="fa-solid fa-user"></i></i> <span th:text ="${#authentication.getPrincipal().getUsername()}"></span>
+                    <span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item active" sec:authorize="isAuthenticated()">
+                <a class="nav-link" th:href="@{/logout}"> <i class="fas fa-sign-out-alt"></i> Logout <span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item active" sec:authorize="isAnonymous()" >
+                <a th:href="@{/login}" class="nav-link">Login</a>
+            </li>
+            <li  class="nav-item active" sec:authorize="isAnonymous()">
+                <a th:href="@{/inscription}" class="nav-link">Inscription</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container mt-4 w-50">
+    <h2>Cree Ticket : </h2>
+    <form th:action="@{/ClientMVC/add}" th:object="${ticket}" method="post">
+        <div class="form-group">
+            <label for="desc">Description</label>
+            <textarea name="description" th:field="*{description}" class="form-control" placeholder="Description" id="desc" cols="30" rows="1"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="env">Envirenement</label>
+            <input name="envirenment" th:field="*{envExe}" type="text" class="form-control" id="env" placeholder="Envirenement">
+        </div>
+        <div class="form-group">
+            <label for="logi">Logiciel</label>
+            <input name="logiciel" th:field="*{logiciel}" type="text" class="form-control" id="logi" placeholder="Logiciel">
+        </div>
+        <div class="form-group">
+            <label for="urg">Urgence</label>
+            <select name="urgence" th:field="*{urgence}" class="form-control" id="urg">
+                <option value="Critique">Critique</option>
+                <option value="Urgent">Urgent</option>
+                <option value="Normal" selected>Normal</option>
+                <option value="Non urgent">Non urgent</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+        <a  th:href="@{/ClientMVC/tickets}" type="submit" class="btn btn-danger">Annuler</a  >
+    </form >
+</div>
+
 
 </body>
 </html>

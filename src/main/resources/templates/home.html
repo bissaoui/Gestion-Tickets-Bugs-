@@ -21,7 +21,6 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Home</title>
 
 </head>
@@ -47,11 +46,12 @@
             </li>
 
             <li class="nav-item active" sec:authorize="hasAuthority('DEV')">
-                <a class="nav-link" th:href="@{/DevMVC/bugs}"> <i class="fa-solid fa-bug"></i></i> Tickets <span class="sr-only"></span></a>
+                <a class="nav-link" th:href="@{/DevMVC/affectedTickets}"> <i class="fa-solid fa-bug"></i></i> Tickets <span class="sr-only"></span></a>
             </li>
 
             <li class="nav-item active" sec:authorize="isAuthenticated()">
-                <a class="nav-link" th:href="@{/profile}"> <i class="fa-solid fa-user"></i></i> Profile <span class="sr-only"></span></a>
+                <a class="nav-link" href="#"> <span th:text ="${#authentication.getPrincipal().getUsername()}"></span>
+                    <span class="sr-only"></span></a>
             </li>
             <li class="nav-item active" sec:authorize="isAuthenticated()">
                 <a class="nav-link" th:href="@{/logout}"> <i class="fas fa-sign-out-alt"></i> Logout <span class="sr-only"></span></a>

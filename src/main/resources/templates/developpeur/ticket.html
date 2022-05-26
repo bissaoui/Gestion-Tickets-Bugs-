@@ -1,4 +1,4 @@
-<!doctype html >
+<!doctype html>
 <html lang="en"  xmlns:th="http://thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -25,88 +25,9 @@
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
 
-    <title>List Tickets</title>
-    <style>
-        table {
-            width: 750px;
-            border-collapse: collapse;
-            margin:50px auto;
-        }
-
-        /* Zebra striping */
-        tr:nth-of-type(odd) {
-            background: #eee;
-        }
-
-        th {
-            background: #3498db;
-            color: white;
-            font-weight: bold;
-        }
-
-        td, th {
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: left;
-            font-size: 18px;
-        }
-
-        /*
-        Max width before this PARTICULAR table gets nasty
-        This query will take effect for any screen smaller than 760px
-        and also iPads specifically.
-        */
-        @media
-        only screen and (max-width: 760px),
-        (min-device-width: 768px) and (max-device-width: 1024px)  {
-
-            table {
-                width: 100%;
-            }
-
-            /* Force table to not be like tables anymore */
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
-
-            /* Hide table headers (but not display: none;, for accessibility) */
-            thead tr {
-                position: absolute;
-                top: -9999px;
-                left: -9999px;
-            }
-
-            tr { border: 1px solid #ccc; }
-
-            td {
-                /* Behave  like a "row" */
-                border: none;
-                border-bottom: 1px solid #eee;
-                position: relative;
-                padding-left: 50%;
-            }
-
-            td:before {
-                /* Now like a table header */
-                position: absolute;
-                /* Top/left values mimic padding */
-                top: 6px;
-                left: 6px;
-                width: 45%;
-                padding-right: 10px;
-                white-space: nowrap;
-                /* Label the data */
-                content: attr(data-column);
-
-                color: #000;
-                font-weight: bold;
-            }
-
-        }
-    </style>
+    <title>Ticket</title>
 </head>
 <body>
-
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" th:href="@{/}">BISSAOUI</a>
@@ -129,7 +50,7 @@
             </li>
 
             <li class="nav-item active" sec:authorize="hasAuthority('DEV')">
-                <a class="nav-link" th:href="@{/DevMVC/bugs}"> <i class="fa-solid fa-bug"></i></i> Tickets <span class="sr-only"></span></a>
+                <a class="nav-link" th:href="@{/DevMVC/affectedTickets}"> <i class="fa-solid fa-bug"></i></i> Tickets <span class="sr-only"></span></a>
             </li>
 
             <li class="nav-item active" sec:authorize="isAuthenticated()">
@@ -148,48 +69,29 @@
         </ul>
     </div>
 </nav>
-<div class="container">
-    <table class="table">
+<div class="container mt-4">
+    <div class="card" >
+        <div class="card-body">
+            <h5 class="card-title" >Ticket ID : <span th:text="${ticket.id}"> </span> </h5>
+            <h6 class="card-subtitle mb-2 text-muted">Description : </h6>
+            <p class="card-text" th:text="${ticket.description}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <div>
+                <h6 class="d-inline"  >Logiciel : </h6>
+                <span th:text="${ticket.logiciel}"></span>
+            </div>
+            <div>
+                <h6 class="d-inline"  >Envirement Execution : </h6>
+                <span th:text="${ticket.envExe}"></span>
+            </div>
+            <div>
+                <h6 class="d-inline" >Urgence : </h6>
+                <span th:text="${ticket.urgence}"></span>
+            </div>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Prenom</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Roles</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-
-
-            <tr th:each="u:${users}">
-
-                <td th:text="${u.id}"></td>
-                <td th:text="${u.nom}"></td>
-                <td th:text="${u.prenom}"></td>
-                <td th:text="${u.username}"></td>
-                <td th:text="${u.email}"></td>
-                <td th:text="${u.roles}"></td>
-                <td>
-
-                    <form
-                            th:action="@{/AdminMVC/User/{id}(id=${u.id})}" th:method="GET" >
-                        <button class="btn btn-secondary" type="submit">
-                            <a>Details</a>
-                        </button>
-
-                    </form>
-                </td>
-            </tr>
-
-
-            </tbody>
-    </table>
+        </div>
+    </div>
 </div>
+
 
 </body>
 </html>
