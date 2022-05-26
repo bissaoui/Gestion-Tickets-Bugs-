@@ -1,0 +1,196 @@
+<!doctype html >
+<html lang="en"  xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <title>List Tickets</title>
+    <style>
+        table {
+            width: 750px;
+            border-collapse: collapse;
+            margin:50px auto;
+        }
+
+        /* Zebra striping */
+        tr:nth-of-type(odd) {
+            background: #eee;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        td, th {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+            font-size: 18px;
+        }
+
+        /*
+        Max width before this PARTICULAR table gets nasty
+        This query will take effect for any screen smaller than 760px
+        and also iPads specifically.
+        */
+        @media
+        only screen and (max-width: 760px),
+        (min-device-width: 768px) and (max-device-width: 1024px)  {
+
+            table {
+                width: 100%;
+            }
+
+            /* Force table to not be like tables anymore */
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            /* Hide table headers (but not display: none;, for accessibility) */
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr { border: 1px solid #ccc; }
+
+            td {
+                /* Behave  like a "row" */
+                border: none;
+                border-bottom: 1px solid #eee;
+                position: relative;
+                padding-left: 50%;
+            }
+
+            td:before {
+                /* Now like a table header */
+                position: absolute;
+                /* Top/left values mimic padding */
+                top: 6px;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                /* Label the data */
+                content: attr(data-column);
+
+                color: #000;
+                font-weight: bold;
+            }
+
+        }
+    </style>
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" th:href="@{/}">BISSAOUI</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+
+            <li class="nav-item active" sec:authorize="hasAuthority('ADMIN')">
+                <a class="nav-link"  th:href="@{/AdminMVC/Users}"> <i class="fas fa-user-friends"></i> Utilisateurs <span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item active" sec:authorize="hasAuthority('ADMIN')">
+                <a class="nav-link" th:href="@{/AdminMVC/Tickets}"> <i class="fa-solid fa-bug"></i></i> Tickets <span class="sr-only"></span></a>
+            </li>
+
+
+            <li class="nav-item active" sec:authorize="hasAuthority('USER')">
+                <a class="nav-link" th:href="@{/ClientMVC/tickets}"> <i class="fa-solid fa-bug"></i></i> Tickets <span class="sr-only"></span></a>
+            </li>
+
+            <li class="nav-item active" sec:authorize="hasAuthority('DEV')">
+                <a class="nav-link" th:href="@{/DevMVC/bugs}"> <i class="fa-solid fa-bug"></i></i> Tickets <span class="sr-only"></span></a>
+            </li>
+
+            <li class="nav-item active" sec:authorize="isAuthenticated()">
+                <a class="nav-link" th:href="@{/profile}"> <i class="fa-solid fa-user"></i></i> Profile <span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item active" sec:authorize="isAuthenticated()">
+                <a class="nav-link" th:href="@{/logout}"> <i class="fas fa-sign-out-alt"></i> Logout <span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item active" sec:authorize="isAnonymous()" >
+                <a th:href="@{/login}" class="nav-link">Login</a>
+            </li>
+            <li  class="nav-item active" sec:authorize="isAnonymous()">
+                <a th:href="@{/inscription}" class="nav-link">Inscription</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+<table class="table">
+    <thead>
+    <tr>
+        <th>#ID</th>
+        <th class="w-50">Description</th>
+        <th>Logiciel</th>
+        <th>Envirenement D'execution</th>
+        <th>Statut</th>
+        <th>Urgence</th>
+        <th>Attribuer</th>
+        <th>Actions</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="u:${tickets}" >
+        <td >
+            <a th:href="@{/AdminMVC/Ticket/{id}(id=${u.id})}" th:text="${u.id}" >        </a>
+
+        </td>
+        <td th:text="${u.description}"></td>
+        <td th:text="${u.logiciel}"></td>
+        <td th:text="${u.envExe}"></td>
+        <td th:text="${u.statut}"></td>
+        <td th:text="${u.urgence}"></td>
+        <td th:text="${u.attr}"></td>
+        <td class="d-flex">
+            <form class="d-inline mr-2"
+                  th:action="@{/AdminMVC/Ticket/d/{id}(id=${u.id})}" th:method="POST" >
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i>
+                </button>
+
+            </form>
+            <a  class="btn btn-secondary mr-2" th:href="@{/AdminMVC/Ticket/{id}(id=${u.id})}"  >  Details      </a>
+
+            <a th:if="${u.attr==false}" class="btn btn-warning" th:href="@{/AdminMVC/Tickets/attr/{id}(id=${u.id})}"> Attribuer</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+
+</body>
+</html>
